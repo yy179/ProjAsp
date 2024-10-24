@@ -1,0 +1,13 @@
+﻿@model ClassLibrary.Models.ContactPersonEntity
+
+<h1>Удалить контактное лицо</h1>
+
+<div>
+    <h4>Вы уверены, что хотите удалить контактное лицо @Model.FirstName @Model.LastName ?</h4>
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Удалить</button>
+    <a asp-action="Index" class="btn btn-secondary">Отмена</a>
+</form>

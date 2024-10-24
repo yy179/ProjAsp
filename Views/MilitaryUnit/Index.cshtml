@@ -1,0 +1,26 @@
+﻿@model IEnumerable<ClassLibrary.Models.MilitaryUnitEntity>
+
+<h1>Список военных организаций</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Название</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var militaryUnit in Model)
+        {
+            <tr>
+                <td>@militaryUnit.Name</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@militaryUnit.Id">Просмотр</a> |
+                    <a asp-action="Edit" asp-route-id="@militaryUnit.Id">Редактировать</a> |
+                    <a asp-action="Delete" asp-route-id="@militaryUnit.Id">Удалить</a> |
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Create" class="btn btn-primary">Добавить военную организацию</a>

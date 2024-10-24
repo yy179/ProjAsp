@@ -1,0 +1,42 @@
+﻿@model ClassLibrary.Models.MilitaryUnitEntity
+
+<h1>Детали военной организации</h1>
+
+<div>
+    <h4>@Model.Name</h4>
+</div>
+
+<h2>Контактные лица</h2>
+@if (ViewBag.ContactPersons != null && (ViewBag.ContactPersons).Count > 0)
+{
+    <ul>
+        @foreach (var contactPerson in ViewBag.ContactPersons)
+        {
+            <li>@contactPerson.FirstName @contactPerson.LastName</li>
+        }
+    </ul>
+}
+else
+{
+    <p>Нет активных контактных лиц.</p>
+}
+
+<h2>Активные Заявки</h2>
+@if (ViewBag.Requests != null && (ViewBag.Requests).Count > 0)
+{
+    <ul>
+        @foreach (var request in ViewBag.Requests)
+        {
+            <li>@request.Name</li>
+        }
+    </ul>
+}
+else
+{
+    <p>Нет активных заявок.</p>
+}
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-secondary">Редактировать</a>
+    <a asp-action="Index" class="btn btn-primary">Назад к списку</a>
+</div>
