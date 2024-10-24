@@ -1,4 +1,7 @@
-﻿using ClassLibrary.Services.Interfaces;
+﻿using ClassLibrary.Models;
+using ClassLibrary.Services;
+using ClassLibrary.Services.Interfaces;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,7 +10,7 @@ namespace ProjApplication.Controllers
     public class OrganizationController : Controller
     {
         private readonly IOrganizationService _organizationService;
-        private OrganizationController(IOrganizationService organizationService)
+        public OrganizationController(IOrganizationService organizationService)
         {
             _organizationService = organizationService;
         }
@@ -19,9 +22,18 @@ namespace ProjApplication.Controllers
         }
 
         // GET: OrganizationController/Details/5
-        public ActionResult Details(int id)
+        public async Task<IActionResult> Details(int id)
         {
-            return View();
+            var organization = await _organizationService.GetByIdAsync(id);
+            var volunteers = await _organizationService.GetVolunteersAsync(id);
+            ViewBag.Volunteers = volunteers;
+            var requests = await _organizationService.GetActiveRequestsAsync(id);
+            ViewBag.Requests = requests;
+            if (organization == null)
+            {
+                return NotFound();
+            }
+            return View(organization);
         }
 
         // GET: OrganizationController/Create
@@ -33,56 +45,78 @@ namespace ProjApplication.Controllers
         // POST: OrganizationController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<IActionResult> Create(OrganizationEntity organization)
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    await _organizationService.AddAsync(organization);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (ValidationException ex)
+                {
+                    ModelState.AddModelError(string.Empty, ex.Message);
+                }
             }
-            catch
-            {
-                return View();
-            }
+            return View(organization);
         }
 
         // GET: OrganizationController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            return View();
+            var organization = await _organizationService.GetByIdAsync(id);
+            if (organization == null)
+            {
+                return NotFound();
+            }
+            return View(organization);
         }
 
         // POST: OrganizationController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<IActionResult> Edit(OrganizationEntity organization)
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    await _organizationService.UpdateAsync(organization);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (ValidationException ex)
+                {
+                    ModelState.AddModelError(string.Empty, ex.Message);
+                }
             }
-            catch
-            {
-                return View();
-            }
+            return View(organization);
         }
 
         // GET: OrganizationController/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            return View();
+            var organization = await _organizationService.GetByIdAsync(id);
+            if (organization == null)
+            {
+                return NotFound();
+            }
+            return View(organization);
         }
 
         // POST: OrganizationController/Delete/5
-        [HttpPost]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             try
             {
+                await _organizationService.DeleteAsync(id);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
+                ModelState.AddModelError(string.Empty, ex.Message);
                 return View();
             }
         }

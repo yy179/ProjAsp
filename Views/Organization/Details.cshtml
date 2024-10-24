@@ -1,27 +1,26 @@
-﻿@model ClassLibrary.Models.VolunteerEntity
+﻿@model ClassLibrary.Models.OrganizationEntity
 
-<h1>Детали волонтера</h1>
+<h1>Детали организации</h1>
 
 <div>
-    <h4>@Model.FirstName @Model.LastName</h4>
+    <h4>@Model.Name</h4>
     <p>Город: @Model.City</p>
-    <p>Биография: @Model.Bio</p>
-    <p>Дата рождения: @Model.DateOfBirth</p>
+    <p>Описание: @Model.Description</p>
 </div>
 
-<h2>Организации</h2>
-@if (ViewBag.Organizations != null && (ViewBag.Organizations).Count > 0)
+<h2>Волонтеры</h2>
+@if (ViewBag.Volunteers != null && (ViewBag.Volunteers).Count > 0)
 {
     <ul>
-        @foreach (var organization in ViewBag.Organizations)
+        @foreach (var volunteer in ViewBag.Volunteers)
         {
-            <li>@organization.Name</li>
+            <li>@volunteer.FirstName && @volunteer.LastName</li>
         }
     </ul>
 }
 else
 {
-    <p>Нет активных организаций.</p>
+    <p>Нет активных волонтеров.</p>
 }
 
 <h2>Активные Заявки</h2>
