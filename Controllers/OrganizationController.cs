@@ -9,9 +9,17 @@ namespace ProjApplication.Controllers
 {
     public class OrganizationController : Controller
     {
+        private readonly IVolunteerOrganizationService _volunteerOrganizationService;
+        private readonly IVolunteerService _volunteerService;
         private readonly IOrganizationService _organizationService;
-        public OrganizationController(IOrganizationService organizationService)
+
+        public OrganizationController(
+            IVolunteerOrganizationService volunteerOrganizationService,
+            IVolunteerService volunteerService,
+            IOrganizationService organizationService)
         {
+            _volunteerOrganizationService = volunteerOrganizationService;
+            _volunteerService = volunteerService;
             _organizationService = organizationService;
         }
         // GET: OrganizationController
@@ -120,5 +128,31 @@ namespace ProjApplication.Controllers
                 return View();
             }
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveVolunteer(int volunteerId, int organizationId)
+        {
+            try
+            {
+                await _volunteerOrganizationService.RemoveVolunteerFromOrganizationAsync(volunteerId, organizationId);
+                return RedirectToAction(nameof(Details), new { id = organizationId });
+            }
+            catch (ArgumentException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                var organization = await _organizationService.GetByIdAsync(organizationId);
+                var volunteers = await _organizationService.GetVolunteersAsync(organizationId);
+                ViewBag.Volunteers = volunteers;
+                var requests = await _organizationService.GetActiveRequestsAsync(organizationId);
+                ViewBag.Requests = requests;
+                return View("Details", organization);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return RedirectToAction(nameof(Details), new { id = organizationId });
+            }
+        }
+
     }
 }

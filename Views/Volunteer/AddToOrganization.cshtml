@@ -1,0 +1,35 @@
+﻿@model IEnumerable<ClassLibrary.Models.OrganizationEntity>
+@{
+    ViewBag.Title = "Присоединить волонтера к организации";
+    var volunteer = ViewBag.Volunteer;
+}
+
+<h1>Присоединить волонтера к организации</h1>
+
+<h3>@volunteer.FirstName @volunteer.LastName</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Название организации</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var organization in Model)
+        {
+            <tr>
+                <td>@organization.Name</td>
+                <td>
+                    <form asp-action="AddToOrganization" method="post">
+                        <input type="hidden" name="volunteerId" value="@volunteer.Id" />
+                        <input type="hidden" name="organizationId" value="@organization.Id" />
+                        <button type="submit" class="btn btn-primary">Присоединить</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Index" class="btn btn-secondary">Назад</a>

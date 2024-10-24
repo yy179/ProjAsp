@@ -8,11 +8,18 @@ namespace ProjApplication.Controllers
 {
     public class VolunteerController : Controller
     {
+        private readonly IVolunteerOrganizationService _volunteerOrganizationService;
         private readonly IVolunteerService _volunteerService;
+        private readonly IOrganizationService _organizationService;
 
-        public VolunteerController(IVolunteerService volunteerService)
+        public VolunteerController(
+            IVolunteerOrganizationService volunteerOrganizationService,
+            IVolunteerService volunteerService,
+            IOrganizationService organizationService)
         {
+            _volunteerOrganizationService = volunteerOrganizationService;
             _volunteerService = volunteerService;
+            _organizationService = organizationService;
         }
 
         // GET: Volunteer/Index
@@ -121,5 +128,39 @@ namespace ProjApplication.Controllers
                 return View();
             }
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddToOrganization(int volunteerId, int organizationId)
+        {
+            try
+            {
+                await _volunteerOrganizationService.AddVolunteerToOrganizationAsync(volunteerId, organizationId);
+                return RedirectToAction("Details", "Organization", new { id = organizationId });
+            }
+            catch (ArgumentException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return RedirectToAction("Index");
+            }
+        }
+        public async Task<IActionResult> AddToOrganization(int id)
+        {
+            var volunteer = await _volunteerService.GetByIdAsync(id);
+            if (volunteer == null)
+            {
+                return NotFound();
+            }
+
+            var organizations = await _organizationService.GetAllAsync();
+            ViewBag.Volunteer = volunteer;
+            return View(organizations);
+        }
+
+
     }
 }

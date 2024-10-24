@@ -14,7 +14,11 @@
     <ul>
         @foreach (var volunteer in ViewBag.Volunteers)
         {
-            <li>@volunteer.FirstName && @volunteer.LastName</li>
+            <li>@volunteer.FirstName @volunteer.LastName
+                <form asp-action="RemoveVolunteer" asp-route-volunteerId="@volunteer.Id" asp-route-organizationId="@Model.Id" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                </form>
+            </li>
         }
     </ul>
 }
