@@ -1,0 +1,31 @@
+﻿@model IEnumerable<ClassLibrary.Models.VolunteerEntity>
+
+<h1>Список Волонтеров</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Имя</th>
+            <th>Фамилия</th>
+            <th>Город</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var volunteer in Model)
+        {
+            <tr>
+                <td>@volunteer.FirstName</td>
+                <td>@volunteer.LastName</td>
+                <td>@volunteer.City</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@volunteer.Id">Просмотр</a> |
+                    <a asp-action="Edit" asp-route-id="@volunteer.Id">Редактировать</a> |
+                    <a asp-action="Delete" asp-route-id="@volunteer.Id">Удалить</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Create" class="btn btn-primary">Добавить Волонтера</a>

@@ -1,0 +1,45 @@
+﻿@model ClassLibrary.Models.VolunteerEntity
+
+<h1>Детали Волонтера</h1>
+
+<div>
+    <h4>@Model.FirstName @Model.LastName</h4>
+    <p>Город: @Model.City</p>
+    <p>Биография: @Model.Bio</p>
+    <p>Дата рождения: @Model.DateOfBirth</p>
+</div>
+
+<h2>Организации</h2>
+@if (ViewBag.Organizations != null && (ViewBag.Organizations).Count > 0)
+{
+    <ul>
+        @foreach (var organization in ViewBag.Organizations)
+        {
+            <li>@organization.Name</li>
+        }
+    </ul>
+}
+else
+{
+    <p>Нет активных организаций.</p>
+}
+
+<h2>Активные Заявки</h2>
+@if (ViewBag.Requests != null && (ViewBag.Requests).Count > 0)
+{
+    <ul>
+        @foreach (var request in ViewBag.Requests)
+        {
+            <li>@request.Name</li>
+        }
+    </ul>
+}
+else
+{
+    <p>Нет активных заявок.</p>
+}
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-secondary">Редактировать</a>
+    <a asp-action="Index" class="btn btn-primary">Назад к списку</a>
+</div>
